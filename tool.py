@@ -6,22 +6,19 @@ except: import Tkinter as tk
 
 master = tk.Tk()
 master.title('База импортного инструмента')
-#master.minsize(390,340)
-#master.maxsize(390,340)
+master.minsize(390,340)
+master.maxsize(390,340)
 
 # --- Заглавное окно ---
 okno0 = tk.LabelFrame(master)
 okno0.pack(padx = 10,
            pady = 10,
            ipadx = 50)
+
 # --- Окно справки --- 
 okno3 = tk.LabelFrame(master)
-"""
-okno3.pack(padx = 10,
-           pady = 10,
-           ipadx = 50)
-"""
-################# Заглавное окно ###################
+
+###               Заглавное окно               ###
 
 # --- Кнопка перехода в окно учёта поступления инструмента ---
 knopka_vvod = tk.Button(okno0,
@@ -46,8 +43,6 @@ def infoo():
     okno3.pack(padx = 10,
                pady = 10,
                ipadx = 50)
-    #okno0.destroy()
-    #okno3.mainloop()
 
 knopka_info = tk.Button(okno0,
                         width = 20,
@@ -69,25 +64,20 @@ knopka_vihod = tk.Button(okno0,
 knopka_vihod.pack(padx = 30,
                   pady = 20)
 
-################# Окно справки ###################    
-
-spravka = tk.Label(okno3,
-                   width = 20,
-                   height = 2,
-                   text='Привет')
-
-spravka.pack(padx = 30,
-             pady = 20)
+###                  Окно справки                  ###    
+tk.Label(okno3,text='- - -').pack(pady=15,anchor='center')
+for i in open('info.txt'):
+    tk.Label(okno3,
+             text=i.rstrip()).pack(anchor='sw',
+                                   padx=15)
+tk.Label(okno3,text='- - -').pack(pady=15,anchor='center')
 
 # --- Кнопка выхода ---
 def nazad():
     okno3.pack_forget()
     okno0.pack(padx = 10,
                pady = 10,
-               ipadx = 50)
-    #okno3.quit()
-    #okno0.mainloop()
-
+               ipadx = 30)
 
 knopka_nazad = tk.Button(okno3,
                          width = 20,
