@@ -13,7 +13,7 @@ def okno(a):
     a.pack(fill='both',
            padx = 20,
            pady = 20,
-           ipadx = 50,
+           ipadx = 40,
            expand=1)
            
 ####################################
@@ -24,10 +24,15 @@ okno0 = tk.LabelFrame(master)
 okno(okno0)
 
 # --- Кнопка перехода в окно учёта поступления инструмента ---
+def vvod_tool():
+    okno0.pack_forget()
+    okno(okno1)
+
 knopka_vvod = tk.Button(okno0,
                         width = 20,
                         height = 2,
-                        text = 'Ввести инструмент')
+                        text = 'Ввести инструмент',
+                        command=vvod_tool)
 knopka_vvod.pack(padx = 30,
                  pady = 20)
 
@@ -65,6 +70,77 @@ knopka_vihod.pack(side='bottom',
                   padx = 30,
                   pady = 20)
 
+############################################
+###   Окно ввода инструмента ("Окно 1")  ###
+############################################
+
+'''
+|   Фреза   |   Резец   |   Пластина   |   Другое  |
+|                  Характеристика                  |
+|                   Наименование                   |
+|   Радиус  | 
+
+
+'''
+
+okno1 = tk.LabelFrame(master)
+
+# --- Ввод типа инструмента ---
+forma1=tk.Frame(okno1)
+forma1.pack(pady=25)
+
+tip_text = tk.Label(forma1,
+                    width = 25,
+                    text = 'Тип:',
+                    anchor = 'w')
+tip_text.grid(row = 1,
+              column = 1,
+              pady = 2)
+
+tip_vvod = tk.Entry(forma1,
+                    width = 20)
+tip_vvod.grid(row = 1,
+              column = 2)
+
+# --- Наименование инструмента ---
+name_text = tk.Label(forma1,
+                     width = 25,
+                     text = 'Наименование:',
+                     anchor = 'w').grid(row = 2,
+                                        column = 1,
+                                        pady = 2)
+name_vvod = tk.Entry(forma1,
+                     width = 20).grid(row = 2,
+                                      column = 2)
+
+# --- Производитель/Стандарт ---
+brand_text = tk.Label(forma1,
+                     width = 25,
+                     text = 'Производитель (или ГОСТ):',
+                     anchor = 'w').grid(row = 3,
+                                        column = 1,
+                                        pady = 2)
+brand_vvod = tk.Entry(forma1,
+                     width = 20).grid(row = 3,
+                                      column = 2)
+
+# --- Кнопка выхода ---
+def back_b(a):
+    def nazad():
+        a.pack_forget()
+        okno(okno0)
+
+    knopka_nazad = tk.Button(a,
+                             width = 10,
+                             height = 2,
+                             text = 'Назад',
+                             command=nazad)
+    knopka_nazad.pack(side='bottom',
+                      anchor='w',
+                      padx=30,
+                      pady=20)
+back_b(okno1)
+
 ###################################
 ###   Окно справки ("Окно 3")   ###
 ###################################
@@ -82,19 +158,20 @@ for i in open('info.txt'):
                                    padx=5)
 
 # --- Кнопка выхода ---
+def back_b(a):
+    def nazad():
+        a.pack_forget()
+        okno(okno0)
 
-def nazad():
-    okno3.pack_forget()
-    okno(okno0)
-
-knopka_nazad = tk.Button(okno3,
-                         width = 10,
-                         height = 2,
-                         text = 'Назад',
-                         command=nazad)
-knopka_nazad.pack(side='bottom',
-                  anchor='w',
-                  padx=30,
-                  pady=20)
+    knopka_nazad = tk.Button(a,
+                             width = 10,
+                             height = 2,
+                             text = 'Назад',
+                             command=nazad)
+    knopka_nazad.pack(side='bottom',
+                      anchor='w',
+                      padx=30,
+                      pady=20)
+back_b(okno3)
 
 tk.mainloop()
