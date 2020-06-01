@@ -74,54 +74,71 @@ knopka_vihod.pack(side='bottom',
 ###   Окно ввода инструмента ("Окно 1")  ###
 ############################################
 
-'''
-|   Фреза   |   Резец   |   Пластина   |   Другое  |
-|                  Характеристика                  |
-|                   Наименование                   |
-|   Радиус  | 
-
-
-'''
-
 okno1 = tk.LabelFrame(master)
 
-# --- Ввод типа инструмента ---
 forma1=tk.Frame(okno1)
-forma1.pack(pady=25)
+forma1.pack(pady=15)
+
+# --- Ввод типа инструмента ---
+
+shag_1 = tk.Label(forma1,
+                  #width = 25,
+                  text = 'Шаг 1: Выберите тип инструмента',
+                  anchor = 'w').grid(row = 1,
+                                     column = 1,
+                                     columnspan=2,
+                                     pady = 20)
 
 tip_text = tk.Label(forma1,
-                    width = 25,
-                    text = 'Тип:',
-                    anchor = 'w')
-tip_text.grid(row = 1,
+                   width=25,
+                   text = 'Тип:')
+                  # anchor='e')
+tip_text.grid(row = 2,
               column = 1,
-              pady = 2)
+              pady = 2,sticky='e')
 
-tip_vvod = tk.Entry(forma1,
-                    width = 20)
-tip_vvod.grid(row = 1,
-              column = 2)
+var1=tk.StringVar(master)
+var1.set('Вращающийся инструмент')
+
+tip_vvod = tk.OptionMenu(forma1,
+                         var1,
+                         'Вращающийся инструмент',
+                         'Токарный инструмент',
+                         'Пластины',
+                         'Вспомогательный инструмент',
+                         'Другое')
+
+tip_vvod.grid(row = 2,
+              column = 2,
+              pady=2,sticky='w')
+
+shag_2 = tk.Label(forma1,
+                  text = 'Шаг 2: Введите данные инструмента',
+                  anchor = 'w').grid(row = 3,
+                                     column = 1,
+                                     columnspan=2,
+                                     pady = 20)
 
 # --- Наименование инструмента ---
 name_text = tk.Label(forma1,
                      width = 25,
                      text = 'Наименование:',
-                     anchor = 'w').grid(row = 2,
+                     anchor = 'w').grid(row = 4,
                                         column = 1,
                                         pady = 2)
 name_vvod = tk.Entry(forma1,
-                     width = 20).grid(row = 2,
+                     width = 35).grid(row = 4,
                                       column = 2)
 
 # --- Производитель/Стандарт ---
 brand_text = tk.Label(forma1,
                      width = 25,
                      text = 'Производитель (или ГОСТ):',
-                     anchor = 'w').grid(row = 3,
+                     anchor = 'w').grid(row = 5,
                                         column = 1,
                                         pady = 2)
 brand_vvod = tk.Entry(forma1,
-                     width = 20).grid(row = 3,
+                     width = 35).grid(row = 5,
                                       column = 2)
 
 # --- Кнопка выхода ---
