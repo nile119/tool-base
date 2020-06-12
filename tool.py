@@ -1,7 +1,18 @@
 #-*- coding: utf-8 -*-
-import psycopg2 as psy
-try:    import tkinter as tk
-except: import Tkinter as tk
+
+try:   
+    import tkinter as tk
+    from tkinter import messagebox
+except: 
+    import Tkinter as tk
+    from Tkinter import tkMessageBox as messagebox
+
+try:       
+    import psycopg2 as psy
+except:   
+    messagebox.showerror("Ошибка", 'Для открытия файла необходимо установить модуль psycopg2')
+
+
 
 
 master = tk.Tk()
