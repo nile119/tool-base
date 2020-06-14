@@ -1,19 +1,20 @@
 #-*- coding: utf-8 -*-
 
+#---------------------
+
+import datetime as dt
 try:   
     import tkinter as tk
     from tkinter import messagebox
 except: 
     import Tkinter as tk
-    from Tkinter import tkMessageBox as messagebox
-
+    import tkMessageBox as messagebox
 try:       
     import psycopg2 as psy
 except:   
     messagebox.showerror("Ошибка", 'Для открытия файла необходимо установить модуль psycopg2')
 
-
-
+#--------------------
 
 master = tk.Tk()
 master.title('База импортного инструмента')
@@ -56,8 +57,6 @@ def forw_b(a,b):         # Кнопка "Далее"
                       padx=30,
                       pady=20,
                       expand=1)
-
-
            
 ####################################
 ###   Заглавное окно ("Окно 0")  ###
@@ -171,7 +170,7 @@ def forw():         # Кнопка "Далее"
     okno(okno1_2)
 def switchButtonState(*args):
     if (var1.get()==''):
-        knopka_vpered['state'] = tk.DISABLED
+        knopka_vpered['sptate'] = tk.DISABLED
     else:
         knopka_vpered['state'] = tk.NORMAL
 knopka_vpered = tk.Button(okno1_1,
@@ -228,6 +227,12 @@ kolichestvo_vvod = tk.Entry(forma1_2, width = 35)
 comment_text = tk.Label(forma1_2, width = 35, text = 'Комментарий:', anchor = 'w')
 comment_vvod = tk.Entry(forma1_2, width = 35)
 
+# --- Дата ---
+date_text = tk.Label(forma1_2, width = 35, text = 'Дата:', anchor = 'w')
+date_vvod = tk.Entry(forma1_2, width = 35)
+date1='%s.%s.%s' % (dt.date.today().day,dt.date.today().month,dt.date.today().year)
+date_vvod.insert(0,date1)
+
 name_text.grid(row=2,column=1,pady=2)
 name_vvod.grid(row=2,column=2,pady=2)
 nomer_text.grid(row=3,column=1,pady=2)
@@ -238,7 +243,70 @@ kolichestvo_text.grid(row=7,column=1,pady=2)
 kolichestvo_vvod.grid(row=7,column=2,pady=2)
 comment_text.grid(row=8,column=1,pady=2)
 comment_vvod.grid(row=8,column=2,pady=2)
+date_text.grid(row=9,column=1,pady=2)
+date_vvod.grid(row=9,column=2,pady=2)
 
+def v_bazu():
+
+    '''
+    Собираем информацию из полей ввода и заносим их в таблицу инструмента
+    '''
+
+    try:       
+        conn = psy.connect("dbname='test' user=Alex")
+    except:   
+        messagebox.showerror("Ошибка", 'Не удаётся открыть базу данных')
+
+    cur = conn.cursor()
+
+    table1 = ['tip',
+              'name',
+              'nomer',
+              'brand',
+              'kolichestvo',
+              'comment',
+              'date']
+
+    data1 = [var1.get(),
+             name_vvod.get(),
+             nomer_vvod.get(),
+             brand_vvod.get(),
+             kolichestvo_vvod.get(),
+             comment_vvod.get(),
+             date_vvod.get()]
+
+    if var1.get()=='Вращающийся инструмент':
+        data1.append(radius_vvod.get())
+        table1.append('radius')
+    if var1.get()=='Пластины':
+        data1.append(material_vvod.get())
+        table1.append('material')
+
+    kol=[]
+    for i in range(len(data1)):
+        kol.append('%s')
+    
+    stroka = "INSERT INTO instrument (%s) VALUES (%s)" % (','.join(table1), ','.join(kol)) 
+   
+    cur.execute(stroka, data1) 
+    conn.commit()
+
+    cur.close()
+    conn.close()
+
+    okno1_2.pack_forget()
+    okno(okno0)
+   
+knopka_v_bazu = tk.Button(okno1_2,
+                         width = 10,
+                         height = 2,
+                         text = 'Далее',
+                          command=v_bazu)
+knopka_v_bazu.pack(side='right',
+                   anchor='e',
+                   padx=30,
+                   pady=20,
+                   expand=1)
 
 
 # --- Кнопка выхода ---
@@ -265,7 +333,7 @@ knopka_nazad_1_2.pack(side='left',
 
 
 # --- Кнопка далее ---
-forw_b(okno1_2,okno1_2)
+#forw_b(okno1_2,okno1_2)
 
 
 ###################################
@@ -279,10 +347,16 @@ okno3 = tk.LabelFrame(master)
 tekst3=tk.Frame(okno3)
 tekst3.pack(pady=25)
 
-for i in open('info.txt'):
-    tk.Label(tekst3,
-             text=i.rstrip()).pack(anchor='w',
-                                   padx=5)
+try:
+    for i in open('info.txt',encoding='utf-8'):
+        tk.Label(tekst3,
+                 text=i.rstrip()).pack(anchor='w',
+                                       padx=5)
+except:
+    for i in open('info.txt'):
+        tk.Label(tekst3,
+                 text=i.rstrip()).pack(anchor='w',
+                                       padx=5)
 
 # --- Кнопка выхода ---
 back_b(okno3,okno0)
