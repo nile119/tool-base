@@ -151,7 +151,6 @@ tip_vvod.pack(pady=2)
 back_b(okno1_1,okno0)
 
 
-
 ### Окно 1_2 Шаг 2: Введите данные инструмента ###
 
 okno1_2 = tk.LabelFrame(master)
@@ -159,18 +158,19 @@ okno1_2 = tk.LabelFrame(master)
 # --- Кнопка далее ---
 
 def forw():         # Кнопка "Далее"
-
-    if var1.get()==u'Вращающийся инструмент':
+    if var1.get() == u'Вращающийся инструмент':
         diam_text.grid(row=6,column=1,pady=2)
         diam_vvod.grid(row=6,column=2,pady=2)
-    elif var1.get()==u'Пластины':
+    elif var1.get() == u'Пластины':
         material_text.grid(row=4,column=1,pady=2)
         material_vvod.grid(row=4,column=2,pady=2)
+  #  posle_shag_2['text']=str(var1.get())
     okno1_1.pack_forget()
     okno(okno1_2)
+
 def switchButtonState(*args):
     if (var1.get()==''):
-        knopka_vpered['sptate'] = tk.DISABLED
+        knopka_vpered['state'] = tk.DISABLED
     else:
         knopka_vpered['state'] = tk.NORMAL
 knopka_vpered = tk.Button(okno1_1,
@@ -192,12 +192,21 @@ var1.trace("w",switchButtonState)
 forma1_2=tk.Frame(okno1_2)
 forma1_2.pack(pady=15)
 
+
 shag_2 = tk.Label(forma1_2,
                   text = 'Шаг 2: Введите данные инструмента',
-                  anchor = 'w').grid(row = 1,
+                  anchor = 'w').grid(row = 0,
                                      column = 1,
                                      columnspan=2,
-                                     pady = 20)
+                                     pady = 5)
+posle_shag_2 = tk.Label(forma1_2,
+                        textvariable = var1,
+                        anchor = 'w').grid(row = 1,
+                                           column = 1,
+                                           columnspan=2,
+                                           pady = 10)
+
+
 
 # --- Наименование инструмента ---
 name_text = tk.Label(forma1_2, width = 35, text = 'Наименование:',anchor = 'w')
@@ -216,7 +225,7 @@ brand_text = tk.Label(forma1_2, width = 35, text = 'Производитель (
 brand_vvod = tk.Entry(forma1_2, width = 35)
 
 # --- Диаметр ---
-diam_text = tk.Label(forma1_2, width = 35, text = 'Радиус, мм:', anchor = 'w')
+diam_text = tk.Label(forma1_2, width = 35, text = 'Диаметр, мм:', anchor = 'w')
 diam_vvod = tk.Entry(forma1_2, width = 35)
 
 # --- Количество ---
@@ -229,9 +238,18 @@ comment_vvod = tk.Entry(forma1_2, width = 35)
 
 # --- Дата ---
 date_text = tk.Label(forma1_2, width = 35, text = 'Дата:', anchor = 'w')
-date_vvod = tk.Entry(forma1_2, width = 35)
-date1='%s.%s.%s' % (dt.date.today().day,dt.date.today().month,dt.date.today().year)
-date_vvod.insert(0,date1)
+date_vvod = tk.Frame(forma1_2)
+date_sep_0 = tk.Label(date_vvod, text = 'День: ')
+date_vvod_d = tk.Entry(date_vvod, width = 2)
+date_sep_1 = tk.Label(date_vvod, text = ',   Месяц: ')
+date_vvod_m = tk.Entry(date_vvod, width = 2)
+date_sep_2 = tk.Label(date_vvod, text = ',   Год: ')
+date_vvod_y = tk.Entry(date_vvod, width = 4)
+
+date_vvod_d.insert(0,str(dt.date.today().day))
+date_vvod_m.insert(0,str(dt.date.today().month))
+date_vvod_y.insert(0,str(dt.date.today().year))
+
 
 name_text.grid(row=2,column=1,pady=2)
 name_vvod.grid(row=2,column=2,pady=2)
@@ -244,14 +262,20 @@ kolichestvo_vvod.grid(row=7,column=2,pady=2)
 comment_text.grid(row=8,column=1,pady=2)
 comment_vvod.grid(row=8,column=2,pady=2)
 date_text.grid(row=9,column=1,pady=2)
-date_vvod.grid(row=9,column=2,pady=2)
+date_vvod.grid(row=9,column=2,pady=2,sticky='w')
+
+date_sep_0.grid(row=1,column=0,pady=2)
+date_vvod_d.grid(row=1,column=1,pady=2)
+date_sep_1.grid(row=1,column=2,pady=2)
+date_vvod_m.grid(row=1,column=3,pady=2)
+date_sep_2.grid(row=1,column=4,pady=2)
+date_vvod_y.grid(row=1,column=5,pady=2)
+
 
 def v_bazu():
-
     '''
     Собираем информацию из полей ввода и заносим их в таблицу инструмента
     '''
-
     try:       
         conn = psy.connect("dbname='test' user=Alex")
     except:   
@@ -273,34 +297,69 @@ def v_bazu():
              brand_vvod.get(),
              kolichestvo_vvod.get(),
              comment_vvod.get(),
-             date_vvod.get()]
+             dt.date(int(date_vvod_y.get()),
+                     int(date_vvod_m.get()),
+                     int(date_vvod_d.get()))]
+
+    polya = [name_vvod,
+             nomer_vvod,
+             brand_vvod,
+             kolichestvo_vvod,
+             comment_vvod,
+             material_vvod,
+             diam_vvod]
+
+
 
     if var1.get()=='Вращающийся инструмент':
-        data1.append(radius_vvod.get())
-        table1.append('radius')
+        try:
+            float(diam_vvod.get())
+        except:
+            messagebox.showerror("Ошибка",
+                                 'Введите число в поле "Диаметр инструмента"')
+            return 1
+        data1.append(diam_vvod.get())
+        table1.append('diam')
+    try:
+       int(kolichestvo_vvod.get())
+    except:
+        messagebox.showerror("Ошибка",
+                             'Введите целое число в поле "Количество"')
+        return 1
     if var1.get()=='Пластины':
         data1.append(material_vvod.get())
         table1.append('material')
+    if comment_vvod.get() == '':
+        comment_vvod.insert(0,' ')
+    if brand_vvod.get() == '':
+        brand_vvod.insert(0,' ')
 
     kol=[]
     for i in range(len(data1)):
         kol.append('%s')
     
-    stroka = "INSERT INTO instrument (%s) VALUES (%s)" % (','.join(table1), ','.join(kol)) 
-   
-    cur.execute(stroka, data1) 
-    conn.commit()
+    stroka = "INSERT INTO instrument (%s) VALUES (%s)" % (','.join(table1), 
+                                                          ','.join(kol)) 
+    try:
+        cur.execute(stroka, data1) 
+        conn.commit()
+        cur.close()
+        conn.close()
+        var1.set('')
+        for i in polya:
+            i.delete(0,"end")
+        messagebox.showinfo('Готово!','Инструмент внесён в базу!')
+        okno1_2.pack_forget()
+        okno(okno0)
+        
+    except:
+        messagebox.showerror("Ошибка", 'Заполните все поля')
 
-    cur.close()
-    conn.close()
-
-    okno1_2.pack_forget()
-    okno(okno0)
    
 knopka_v_bazu = tk.Button(okno1_2,
-                         width = 10,
-                         height = 2,
-                         text = 'Далее',
+                          width = 10,
+                          height = 2,
+                          text = 'Далее',
                           command=v_bazu)
 knopka_v_bazu.pack(side='right',
                    anchor='e',
@@ -310,7 +369,6 @@ knopka_v_bazu.pack(side='right',
 
 
 # --- Кнопка выхода ---
-
 
 def nazad_1_2():
 
