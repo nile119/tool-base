@@ -6,9 +6,11 @@ import datetime as dt
 try:   
     import tkinter as tk
     from tkinter import messagebox
+    from tkinter import ttk
 except: 
     import Tkinter as tk
     import tkMessageBox as messagebox
+    from Tkinter import ttk
 try:       
     import psycopg2 as psy
 except:   
@@ -40,6 +42,7 @@ def forw_b(a,b):         # Кнопка "Далее"
 master = tk.Tk()
 master.title('База импортного инструмента')
 master.minsize(640,20)
+master.resizable(False,False)
 #master.maxsize(640,420)
 
 okno0 = tk.LabelFrame(master)
@@ -54,19 +57,28 @@ def vvod_tool():
 knopka_vvod = tk.Button(okno0, width = 20, height = 2, text = 'Ввести инструмент', command=vvod_tool)
 knopka_vvod.pack(padx = 30, pady = 20)
 
+# --- Кнопка перехода в окно редактирования ---
+
+def red_tool():
+    okno0.pack_forget()
+    okno(okno2)
+
+knopka_red = tk.Button(okno0, width = 20, height = 2, text = 'Изменить инструмент', command = red_tool)
+knopka_red.pack(padx = 30, pady = 0)
+
 # --- Кнопка перехода в окно учёта выдачи инструмента ---
 
 knopka_vydacha = tk.Button(okno0, width = 20, height = 2, text = 'Выдать инструмент')
-knopka_vydacha.pack(padx = 30, pady = 0)
+knopka_vydacha.pack(padx = 30, pady = 20)
 
 # --- Кнопка перехода к информации о программе ---
 
 def infoo():
     okno0.pack_forget()
-    okno(okno3)
+    okno(okno4)
 
 knopka_info = tk.Button(okno0, width = 20, height = 2, text = 'О программе...', command=infoo)
-knopka_info.pack(padx = 30, pady = 20)
+knopka_info.pack(padx = 30, pady = 0)
 
 # --- Кнопка выхода ---
 
@@ -317,27 +329,64 @@ def nazad_1_2():
 knopka_nazad_1_2 = tk.Button(okno1_2, width = 10, height = 2, text = 'Назад', command=nazad_1_2)
 knopka_nazad_1_2.pack(side='left', anchor='w', padx=30, pady=20, expand=1)
 
+##########################################
+###   Окно редактирования ("Окно 2")   ###
+##########################################
+
+okno2 = tk.LabelFrame(master)
+
+table2 = ['name',
+          'nomer',
+          'brand',
+          'kolichestvo',
+          'date',
+          'material',
+          'diam',
+          'comment']
+
+table2_name = ['Наименование',
+               'Номер',
+               'Производитель',
+               'Количество',
+               'Дата',
+               'Материал',
+               'Диаметр',
+               'Комментарий']
+
+tabl = ttk.Treeview(okno2, height = 10, columns=table2)
+tabl.pack(pady=10)
+
+tabl.column('#0',width=50)
+for i in table2:
+    tabl.column(i,width=125)
+
+tabl.heading('#0',text='№')
+for i in table2:
+    tabl.heading(i,text=table2_name[table2.index(i)])
+
+back_b(okno2,okno0)
+
 ###################################
-###   Окно справки ("Окно 3")   ###
+###   Окно справки ("Окно 4")   ###
 ###################################
 
-okno3 = tk.LabelFrame(master)
+okno4 = tk.LabelFrame(master)
 
 # --- Справочный текст ---
 
-tekst3=tk.Frame(okno3)
-tekst3.pack(pady=25)
+tekst4=tk.Frame(okno4)
+tekst4.pack(pady=25)
 
 try:
     for i in open('info.txt',encoding='utf-8'):
-        tk.Label(tekst3, text=i.rstrip()).pack(anchor='w', padx=5)
+        tk.Label(tekst4, text=i.rstrip()).pack(anchor='w', padx=5)
 except:
     for i in open('info.txt'):
-        tk.Label(tekst3, text=i.rstrip()).pack(anchor='w', padx=5)
+        tk.Label(tekst4, text=i.rstrip()).pack(anchor='w', padx=5)
 
 # --- Кнопка выхода ---
 
-back_b(okno3,okno0)
+back_b(okno4,okno0)
 
 tk.mainloop()
 
